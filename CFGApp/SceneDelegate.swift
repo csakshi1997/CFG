@@ -10,13 +10,53 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
-
+    var navigationController : UINavigationController?
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
+        if Defaults.isUserLoggedIn ?? false {
+            gotoHomeView()
+        } else {
+            gotoLoginView()
+        }
         guard let _ = (scene as? UIWindowScene) else { return }
+    }
+    
+    func setRootViewController(_ viewController: UIViewController, animated: Bool = true) {
+        guard let window = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .first?
+            .windows
+            .first else {
+            return
+        }
+        window.rootViewController = viewController
+        window.makeKeyAndVisible()
+        
+        if animated {
+            let options: UIView.AnimationOptions = .transitionFlipFromRight
+            UIView.transition(with: window, duration: 0.5, options: options, animations: nil, completion: nil)
+        }
+    }
+    
+    func gotoHomeView() {
+        let storyBoard : UIStoryboard = UIStoryboard(name: "Home", bundle:nil)
+        let homeVC = storyBoard.instantiateViewController(withIdentifier: "HomeVC") as? HomeVC
+        SceneDelegate.getSceneDelegate().navigationController = UINavigationController(rootViewController: homeVC ?? HomeVC())
+        SceneDelegate.getSceneDelegate().navigationController?.isNavigationBarHidden = true
+        SceneDelegate.getSceneDelegate().window!.rootViewController = SceneDelegate.getSceneDelegate().navigationController
+    }
+    
+    
+    
+    func gotoLoginView() {
+        let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
+        let viewController = storyBoard.instantiateViewController(withIdentifier: "ViewController") as! ViewController
+        SceneDelegate.getSceneDelegate().navigationController = UINavigationController(rootViewController: viewController)
+        SceneDelegate.getSceneDelegate().navigationController?.isNavigationBarHidden = true
+        SceneDelegate.getSceneDelegate().window!.rootViewController = SceneDelegate.getSceneDelegate().navigationController
+    }
+    
+    static func getSceneDelegate() -> SceneDelegate {
+        return UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

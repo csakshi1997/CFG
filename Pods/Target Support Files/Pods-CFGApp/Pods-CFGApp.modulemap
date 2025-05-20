@@ -1,0 +1,6 @@
+framework module Pods_CFGApp {
+  umbrella header "Pods-CFGApp-umbrella.h"
+
+  export *
+  module * { export * }
+}
