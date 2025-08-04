@@ -27,46 +27,31 @@ class HomeVC: UIViewController {
     
     func getNotification() {
         notificationOperation.getAllNotification { error, ResponseStatus, statusCode in
-            // Check if the ResponseStatus contains "Mobile_Notification" data
             if let data = ResponseStatus {
-                // Get the array of notifications from the "Mobile_Notification" key
                 if let notificationsArray = data["Mobile_Notification"] as? [[String: Any]], notificationsArray.count > 0 {
-                    // Filter the notifications to get only unread notifications
                     let unreadNotifications = notificationsArray.filter { dict in
-                        // Check if the notification is unread (IsRead__c is false)
                         return dict["IsRead__c"] as? Bool == false
                     }
-                    
-                    // Count the unread notifications
                     let unreadCount = unreadNotifications.count
-                    
-                    // Update the UI with the unread notification count
                     DispatchQueue.main.async {
                         self.updateNotificationIcon(unreadCount: unreadCount)
                     }
-
-                    // Hide the "No Data" view and show the table view (if needed)
                     self.notificationCountLbl?.isHidden = unreadCount > 0
                 } else {
-                    // No notifications available, show "No Data" view
                     self.notificationCountLbl?.isHidden = false
                 }
             } else {
                 print("Error: ResponseStatus is not a dictionary")
-                // Show the "No Data" view in case of an error
                 self.notificationCountLbl?.isHidden = false
             }
         }
     }
     
     func updateNotificationIcon(unreadCount: Int) {
-        // Assuming you have a UILabel or UIButton to display the notification count
         if unreadCount > 0 {
-            // Display unread count
             notificationCountLbl?.isHidden = false
             notificationCountLbl?.text = "\(unreadCount)"
         } else {
-            // Hide the badge if no unread notifications
             notificationCountLbl?.isHidden = true
         }
     }
@@ -124,7 +109,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
         cell.titleLabel?.text = HomeItems.allCases[indexPath.item].rawValue
         cell.headingLbl?.text = HomeItems.allCases[indexPath.item].getHomeItemsText()
         switch indexPath.row {
-        case 4, 5, 6, 8, 10, 11, 12:
+        case 0, 1, 4, 5, 6, 7, 8, 10, 11, 12:
             cell.commingSoonLbl?.text = "Coming soon..."
         default:
             cell.commingSoonLbl?.text = ""

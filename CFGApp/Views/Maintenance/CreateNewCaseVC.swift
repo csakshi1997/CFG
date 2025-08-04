@@ -151,10 +151,10 @@ class CreateNewCaseVC: UIViewController, UITextViewDelegate, UITextFieldDelegate
         vw?.layer.masksToBounds = true
         ticketTypeTxtVw?.inputView = pickerView
         selectClinicTxtVw?.inputView = pickerView
-
+        
         ticketTypeTxtVw?.inputAccessoryView = createToolbar()
         selectClinicTxtVw?.inputAccessoryView = createToolbar()
-
+        
         ticketTypeTxtVw?.delegate = self
         selectClinicTxtVw?.delegate = self
         setupPickerView()
@@ -176,7 +176,7 @@ class CreateNewCaseVC: UIViewController, UITextViewDelegate, UITextFieldDelegate
         toolbar.setItems([doneButton], animated: false)
         return toolbar
     }
-
+    
     func addTapGestureToDismissKeyboard() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
@@ -186,7 +186,7 @@ class CreateNewCaseVC: UIViewController, UITextViewDelegate, UITextFieldDelegate
     @objc func dismissKeyboard() {
         view.endEditing(true)
     }
-        
+    
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         if textView == ticketTypeTxtVw {
             currentClinicPickerData.removeAll()
@@ -227,13 +227,13 @@ class CreateNewCaseVC: UIViewController, UITextViewDelegate, UITextFieldDelegate
             textField.superview?.layoutIfNeeded()
         }
     }
-
+    
     let mediaItems: [MediaItem] = [
         MediaItem(type: .image, image: UIImage(named: "sampleImage"), videoURL: nil, pdfURL: nil, thumbnail: nil),
         MediaItem(type: .video, image: nil, videoURL: URL(string: "file:///path/video.mp4"), pdfURL: nil, thumbnail: UIImage(named: "videoThumbnail")),
         MediaItem(type: .pdf, image: nil, videoURL: nil, pdfURL: URL(string: "file:///path/document.pdf"), thumbnail: nil)
     ]
-
+    
     func imageToBase64(image: UIImage) -> String? {
         if let imageData = image.jpegData(compressionQuality: 1.0) {
             return imageData.base64EncodedString()
@@ -255,9 +255,9 @@ class CreateNewCaseVC: UIViewController, UITextViewDelegate, UITextFieldDelegate
             return nil
         }
     }
-        
+    
     func showValidationError(for field: UIView?, message: String) {
-       if let textView = field as? UITextView {
+        if let textView = field as? UITextView {
             textView.layer.borderColor = UIColor.red.cgColor
             textView.layer.borderWidth = 1.0
             textView.layer.cornerRadius = 5.0
@@ -270,7 +270,6 @@ class CreateNewCaseVC: UIViewController, UITextViewDelegate, UITextFieldDelegate
             textView.layer.borderWidth = 0
         }
     }
-    
     
     @IBAction func submitAction() {
         var isValid = true
@@ -312,115 +311,115 @@ class CreateNewCaseVC: UIViewController, UITextViewDelegate, UITextFieldDelegate
         self.present(alert, animated: true, completion: nil)
     }
     
-//    func submitFunc() {
-//        var payload: [String: Any] = [
-//            "ticket_type": ticketTypeTxtVw?.text ?? "",
-//            "clinic_name": clinicId,
-//            "remarks": remarkTextVw?.text ?? "",
-//            "m_status": "Pending by AM"
-//        ]
-//        let mediaItemCount = min(selectedMediaItems.count, 5)
-//        let compressionQuality: CGFloat = 0.3
-//        
-//        DispatchQueue.global(qos: .userInitiated).async {
-//            var mediaData: [String: Any] = [:]
-//            let group = DispatchGroup()
-//            
-//            for (index, mediaItem) in self.selectedMediaItems.prefix(mediaItemCount).enumerated() {
-//                let mediaIndex = index + 1
-//                group.enter()
-//                
-//                var base64Key = (mediaIndex == 1) ? "imageBase64" : "imageBase64_\(mediaIndex)"
-//                
-//                switch mediaItem.type {
-//                case .image:
-//                    mediaData["image_type_\(mediaIndex)"] = "jpeg"
-//                    if let image = mediaItem.image {
-//                        DispatchQueue.global(qos: .utility).async {
-//                            if let compressedData = self.compressImageToSize(image: image, targetSizeKB: 80) {
-//                                let base64String = compressedData.base64EncodedString()
-//                                DispatchQueue.main.async {
-//                                    mediaData[base64Key] = base64String
-//                                    group.leave()
-//                                }
-//                            } else {
-//                                group.leave()
-//                            }
-//                        }
-//                    } else {
-//                        group.leave()
-//                    }
-//                    
-//                case .video:
-//                    mediaData["image_type_\(mediaIndex)"] = "mp4"
-//                    if let videoURL = mediaItem.videoURL {
-//                        let compressedURL = FileManager.default.temporaryDirectory.appendingPathComponent("compressed\(mediaIndex).mp4")
-//                        self.compressVideoToSize(inputURL: videoURL, outputURL: compressedURL) { compressedVideoURL in
-//                            if let compressedVideoURL = compressedVideoURL,
-//                               let base64String = self.fileToBase64(filePath: compressedVideoURL.path) {
-//                                DispatchQueue.main.async {
-//                                    mediaData[base64Key] = base64String
-//                                    group.leave()
-//                                }
-//                            } else {
-//                                group.leave()
-//                            }
-//                        }
-//                    } else {
-//                        group.leave()
-//                    }
-//                    
-//                case .pdf:
-//                    mediaData["image_type_\(mediaIndex)"] = "pdf"
-//                    if let pdfURL = mediaItem.pdfURL {
-//                        DispatchQueue.global(qos: .utility).async {
-//                            if let base64String = self.base64ForPDF(at: pdfURL) {
-//                                DispatchQueue.main.async {
-//                                    mediaData[base64Key] = base64String
-//                                    group.leave()
-//                                }
-//                            } else {
-//                                group.leave()
-//                            }
-//                        }
-//                    } else {
-//                        group.leave()
-//                    }
-//                }
-//            }
-//            
-//            group.notify(queue: .main) {
-//                if mediaItemCount < 5 {
-//                    for i in (mediaItemCount + 1)...5 {
-//                        if !mediaData.keys.contains("image_type_\(i)") {
-//                            mediaData["image_type_\(i)"] = ""
-//                        }
-//                        if !mediaData.keys.contains("imageBase64_\(i)") {
-//                            mediaData["imageBase64_\(i)"] = ""
-//                        }
-//                    }
-//                }
-//                
-//                mediaData = mediaData.filter { !(($0.value as? String)?.isEmpty ?? true) }
-//                
-//                for (key, value) in mediaData {
-//                    payload[key] = value
-//                }
-//                
-//                print("Final Payload Before Sending: \(payload)")
-//                
-//                self.maintenanceOperation.submitNewTicketFormaintenance(param: payload) { error, response, statusCode in
-//                    if error == nil {
-//                        SceneDelegate.getSceneDelegate().window?.makeToast(YOUR_TICKET_HAS_BEEN_SAVED)
-//                        self.completionHandler(EMPTY)
-//                        self.navigationController?.popViewController(animated: true)
-//                    } else {
-//                        SceneDelegate.getSceneDelegate().window?.makeToast(SOMETHING_WENT_WRONG_STR)
-//                    }
-//                }
-//            }
-//        }
-//    }
+    //    func submitFunc() {
+    //        var payload: [String: Any] = [
+    //            "ticket_type": ticketTypeTxtVw?.text ?? "",
+    //            "clinic_name": clinicId,
+    //            "remarks": remarkTextVw?.text ?? "",
+    //            "m_status": "Pending by AM"
+    //        ]
+    //        let mediaItemCount = min(selectedMediaItems.count, 5)
+    //        let compressionQuality: CGFloat = 0.3
+    //
+    //        DispatchQueue.global(qos: .userInitiated).async {
+    //            var mediaData: [String: Any] = [:]
+    //            let group = DispatchGroup()
+    //
+    //            for (index, mediaItem) in self.selectedMediaItems.prefix(mediaItemCount).enumerated() {
+    //                let mediaIndex = index + 1
+    //                group.enter()
+    //
+    //                var base64Key = (mediaIndex == 1) ? "imageBase64" : "imageBase64_\(mediaIndex)"
+    //
+    //                switch mediaItem.type {
+    //                case .image:
+    //                    mediaData["image_type_\(mediaIndex)"] = "jpeg"
+    //                    if let image = mediaItem.image {
+    //                        DispatchQueue.global(qos: .utility).async {
+    //                            if let compressedData = self.compressImageToSize(image: image, targetSizeKB: 80) {
+    //                                let base64String = compressedData.base64EncodedString()
+    //                                DispatchQueue.main.async {
+    //                                    mediaData[base64Key] = base64String
+    //                                    group.leave()
+    //                                }
+    //                            } else {
+    //                                group.leave()
+    //                            }
+    //                        }
+    //                    } else {
+    //                        group.leave()
+    //                    }
+    //
+    //                case .video:
+    //                    mediaData["image_type_\(mediaIndex)"] = "mp4"
+    //                    if let videoURL = mediaItem.videoURL {
+    //                        let compressedURL = FileManager.default.temporaryDirectory.appendingPathComponent("compressed\(mediaIndex).mp4")
+    //                        self.compressVideoToSize(inputURL: videoURL, outputURL: compressedURL) { compressedVideoURL in
+    //                            if let compressedVideoURL = compressedVideoURL,
+    //                               let base64String = self.fileToBase64(filePath: compressedVideoURL.path) {
+    //                                DispatchQueue.main.async {
+    //                                    mediaData[base64Key] = base64String
+    //                                    group.leave()
+    //                                }
+    //                            } else {
+    //                                group.leave()
+    //                            }
+    //                        }
+    //                    } else {
+    //                        group.leave()
+    //                    }
+    //
+    //                case .pdf:
+    //                    mediaData["image_type_\(mediaIndex)"] = "pdf"
+    //                    if let pdfURL = mediaItem.pdfURL {
+    //                        DispatchQueue.global(qos: .utility).async {
+    //                            if let base64String = self.base64ForPDF(at: pdfURL) {
+    //                                DispatchQueue.main.async {
+    //                                    mediaData[base64Key] = base64String
+    //                                    group.leave()
+    //                                }
+    //                            } else {
+    //                                group.leave()
+    //                            }
+    //                        }
+    //                    } else {
+    //                        group.leave()
+    //                    }
+    //                }
+    //            }
+    //
+    //            group.notify(queue: .main) {
+    //                if mediaItemCount < 5 {
+    //                    for i in (mediaItemCount + 1)...5 {
+    //                        if !mediaData.keys.contains("image_type_\(i)") {
+    //                            mediaData["image_type_\(i)"] = ""
+    //                        }
+    //                        if !mediaData.keys.contains("imageBase64_\(i)") {
+    //                            mediaData["imageBase64_\(i)"] = ""
+    //                        }
+    //                    }
+    //                }
+    //
+    //                mediaData = mediaData.filter { !(($0.value as? String)?.isEmpty ?? true) }
+    //
+    //                for (key, value) in mediaData {
+    //                    payload[key] = value
+    //                }
+    //
+    //                print("Final Payload Before Sending: \(payload)")
+    //
+    //                self.maintenanceOperation.submitNewTicketFormaintenance(param: payload) { error, response, statusCode in
+    //                    if error == nil {
+    //                        SceneDelegate.getSceneDelegate().window?.makeToast(YOUR_TICKET_HAS_BEEN_SAVED)
+    //                        self.completionHandler(EMPTY)
+    //                        self.navigationController?.popViewController(animated: true)
+    //                    } else {
+    //                        SceneDelegate.getSceneDelegate().window?.makeToast(SOMETHING_WENT_WRONG_STR)
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
     
     
     func submitFunc() {
@@ -594,7 +593,7 @@ class CreateNewCaseVC: UIViewController, UITextViewDelegate, UITextFieldDelegate
     
     func compressVideoToSize(inputURL: URL, outputURL: URL, completion: @escaping (URL?) -> Void) {
         let asset = AVAsset(url: inputURL)
-
+        
         // Check video duration (in seconds)
         let durationInSeconds = CMTimeGetSeconds(asset.duration)
         if durationInSeconds > 60 { // 1 minute limit
@@ -604,7 +603,7 @@ class CreateNewCaseVC: UIViewController, UITextViewDelegate, UITextFieldDelegate
             completion(nil)
             return
         }
-
+        
         guard let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetMediumQuality) else {
             completion(nil)
             return
@@ -641,7 +640,7 @@ class CreateNewCaseVC: UIViewController, UITextViewDelegate, UITextFieldDelegate
         
         let originalSize = pdfData.count
         let maxSize = targetSizeKB * 1024
-
+        
         // Directly check size. If within limit, just copy
         if originalSize <= maxSize {
             try? FileManager.default.copyItem(at: inputURL, to: outputURL)
@@ -664,12 +663,12 @@ class CreateNewCaseVC: UIViewController, UITextViewDelegate, UITextFieldDelegate
             }
         }
     }
-
+    
     func getFileExtension(from url: URL?) -> String {
         guard let url = url else { return "" }
         return url.pathExtension.lowercased()
     }
-
+    
     func getImagePath(for image: UIImage?) -> String? {
         guard let image = image else { return nil }
         
@@ -709,7 +708,7 @@ extension CreateNewCaseVC: UIPickerViewDelegate, UIPickerViewDataSource {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if ticketTypeTxtVw?.isFirstResponder == true {
             ticketTypeTxtVw?.text = currentPickerData[row]
-//            ticketTypeTxtVw?.isEditable = false  // Make non-editable
+            //            ticketTypeTxtVw?.isEditable = false  // Make non-editable
             clearValidationError(for: ticketTypeTxtVw)
             
             // Optional styling
@@ -720,7 +719,7 @@ extension CreateNewCaseVC: UIPickerViewDelegate, UIPickerViewDataSource {
         } else if selectClinicTxtVw?.isFirstResponder == true {
             let selectedClinic = currentClinicPickerData[row]
             selectClinicTxtVw?.text = selectedClinic.name
-//            selectClinicTxtVw?.isEditable = false  // Make non-editable
+            //            selectClinicTxtVw?.isEditable = false  // Make non-editable
             clinicId = selectedClinic.id
             print("Selected Clinic ID: \(clinicId)")
             clearValidationError(for: selectClinicTxtVw)
@@ -741,7 +740,6 @@ extension CreateNewCaseVC: UIPickerViewDelegate, UIPickerViewDataSource {
         return label
     }
 }
-
 
 extension CreateNewCaseVC: UICollectionViewDelegate, UICollectionViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIDocumentPickerDelegate {
     
@@ -780,48 +778,62 @@ extension CreateNewCaseVC: UICollectionViewDelegate, UICollectionViewDataSource,
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(selectedMediaItems)
-        if indexPath.item < selectedMediaItems.count {
-            selectedIndex = indexPath.item
-            openMediaPicker()
+        selectedIndex = indexPath.item < selectedMediaItems.count ? indexPath.item : selectedMediaItems.count
+        if let cell = collectionView.cellForItem(at: indexPath) {
+            openMediaPicker(sourceView: cell)
         } else {
-            selectedIndex = selectedMediaItems.count
-            openMediaPicker()
+            openMediaPicker(sourceView: collectionView)
         }
     }
-    
-    func generateThumbnailFromVideo(at url: URL) -> UIImage? {
+        
+    func generateThumbnailFromVideo(at url: URL, completion: @escaping (UIImage?) -> Void) {
         let asset = AVURLAsset(url: url)
         let assetGenerator = AVAssetImageGenerator(asset: asset)
         assetGenerator.appliesPreferredTrackTransform = true
         let time = CMTimeMake(value: 1, timescale: 60)
-        var thumbnailImage: UIImage?
-        let semaphore = DispatchSemaphore(value: 0)
+        
         assetGenerator.generateCGImageAsynchronously(for: time) { cgImage, actualTime, error in
+            var thumbnailImage: UIImage?
             if let error = error {
                 print("Error generating thumbnail: \(error)")
             } else if let cgImage = cgImage {
                 thumbnailImage = UIImage(cgImage: cgImage)
             }
-            semaphore.signal()
+            DispatchQueue.main.async {
+                completion(thumbnailImage)
+            }
         }
-        semaphore.wait()
-        return thumbnailImage
     }
     
-    func openMediaPicker() {
-        let mediaPickerController = UIAlertController(title: "Choose Media", message: "Select an image, video, or document", preferredStyle: .actionSheet)
-        mediaPickerController.addAction(UIAlertAction(title: "Select Image", style: .default, handler: { _ in
+    func openMediaPicker(sourceView: UIView? = nil) {
+        let mediaPickerController = UIAlertController(
+            title: "Choose Media",
+            message: "Select an image, video, or document",
+            preferredStyle: .actionSheet
+        )
+        
+        mediaPickerController.addAction(UIAlertAction(title: "Select Image", style: .default) { _ in
             self.openImagePickerController()
-        }))
-        mediaPickerController.addAction(UIAlertAction(title: "Select Video", style: .default, handler: { _ in
+        })
+        
+        mediaPickerController.addAction(UIAlertAction(title: "Select Video", style: .default) { _ in
             self.openVideoPickerController()
-        }))
-        mediaPickerController.addAction(UIAlertAction(title: "Select PDF", style: .default, handler: { _ in
+        })
+        
+        mediaPickerController.addAction(UIAlertAction(title: "Select PDF", style: .default) { _ in
             self.openDocumentPickerController()
-        }))
-        mediaPickerController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        present(mediaPickerController, animated: true, completion: nil)
+        })
+        
+        mediaPickerController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        // ✅ Fix crash on iPad by setting popoverPresentationController
+        if let popoverController = mediaPickerController.popoverPresentationController {
+            popoverController.sourceView = sourceView ?? self.view
+            popoverController.sourceRect = sourceView?.bounds ?? CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+            popoverController.permittedArrowDirections = []
+        }
+        
+        present(mediaPickerController, animated: true)
     }
     
     func openImagePickerController() {
@@ -831,7 +843,7 @@ extension CreateNewCaseVC: UICollectionViewDelegate, UICollectionViewDataSource,
         imagePicker.mediaTypes = ["public.image"]
         present(imagePicker, animated: true, completion: nil)
     }
-
+    
     func openVideoPickerController() {
         let videoPicker = UIImagePickerController()
         videoPicker.delegate = self
@@ -839,13 +851,13 @@ extension CreateNewCaseVC: UICollectionViewDelegate, UICollectionViewDataSource,
         videoPicker.mediaTypes = ["public.movie"]
         present(videoPicker, animated: true, completion: nil)
     }
-
+    
     func openDocumentPickerController() {
         let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [.pdf])
         documentPicker.delegate = self
         present(documentPicker, animated: true, completion: nil)
     }
-
+    
     func presentImagePickerController() {
         let imagePickerController = UIImagePickerController()
         imagePickerController.delegate = self
@@ -853,58 +865,59 @@ extension CreateNewCaseVC: UICollectionViewDelegate, UICollectionViewDataSource,
         imagePickerController.allowsEditing = true
         present(imagePickerController, animated: true, completion: nil)
     }
-
+    
     func presentDocumentPickerController() {
         let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [UTType.pdf]) // Handles PDFs
         documentPicker.delegate = self
         present(documentPicker, animated: true, completion: nil)
     }
-
+    
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        var mediaItem: MediaItem?
-
         if let selectedImage = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage {
-            mediaItem = MediaItem(type: .image, image: selectedImage)
-        } else if let videoURL = info[.mediaURL] as? URL {
-            let thumbnail = generateThumbnailFromVideo(at: videoURL)
-            mediaItem = MediaItem(type: .video, videoURL: videoURL, thumbnail: thumbnail)
+            let mediaItem = MediaItem(type: .image, image: selectedImage)
+            updateSelectedMediaItem(with: mediaItem)
         }
-
-        if let mediaItem = mediaItem {
-            if selectedIndex < selectedMediaItems.count {
-                selectedMediaItems[selectedIndex] = mediaItem  // Replace existing item
-            } else {
-                selectedMediaItems.append(mediaItem)  // Append if it's a new selection
+        else if let videoURL = info[.mediaURL] as? URL {
+            generateThumbnailFromVideo(at: videoURL) { thumbnail in
+                let mediaItem = MediaItem(type: .video, videoURL: videoURL, thumbnail: thumbnail)
+                self.updateSelectedMediaItem(with: mediaItem)
             }
         }
-
+        
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    private func updateSelectedMediaItem(with mediaItem: MediaItem) {
+        if selectedIndex < selectedMediaItems.count {
+            selectedMediaItems[selectedIndex] = mediaItem
+        } else {
+            selectedMediaItems.append(mediaItem)
+        }
         DispatchQueue.main.async {
             self.collectionView?.reloadData()
         }
-
-        picker.dismiss(animated: true, completion: nil)
     }
-
+    
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let pdfURL = urls.first else { return }
         let mediaItem = MediaItem(type: .pdf, pdfURL: pdfURL)
-
+        
         if selectedIndex < selectedMediaItems.count {
             selectedMediaItems[selectedIndex] = mediaItem  // Replace existing item
         } else {
             selectedMediaItems.append(mediaItem)  // Append if it's a new selection
         }
-
+        
         DispatchQueue.main.async {
             self.collectionView?.reloadData()
         }
     }
-
+    
     func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
         print("Document Picker was cancelled.")
     }
-
+    
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
     }

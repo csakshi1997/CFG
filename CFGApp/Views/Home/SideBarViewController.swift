@@ -40,14 +40,38 @@ class SideBarViewController: UIViewController {
     }
     
     @IBAction func settingAction() {
-        
+        let alert = UIAlertController(title: "Coming Soon",
+                                      message: "This functionality will be available in the next phase of the app.",
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            self.dismissViewController()
+        }))
+        self.present(alert, animated: true, completion: nil)
     }
     
     @IBAction func logoutAction() {
+        let checkInalert = UIAlertController(
+            title: "Confirmation",
+            message: "Are you sure you want to Logout?",
+            preferredStyle: .alert
+        )
+        self.present(checkInalert, animated: true, completion: nil)
+        checkInalert.addAction(UIAlertAction(title: "No", style: .cancel, handler: { _ in
+            print("Cancel tapped")
+        }))
         
+        checkInalert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
+            Utility.logoutAction(isRedirectedToLogin: true)
+        }))
     }
     
     @IBAction func languageAction() {
-        
+        let alert = UIAlertController(title: "Coming Soon",
+                                      message: "This functionality will be available in the next phase of the app.",
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            self.dismissViewController()
+        }))
+        self.present(alert, animated: true, completion: nil)
     }
 }

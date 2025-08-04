@@ -59,8 +59,8 @@ class ViewController: UIViewController {
         //        userNameTxtFld?.text = "cf.manager@cfg.sg"
         //        passwordTxtFld?.text = "test@171"
         
-                userNameTxtFld?.text = "cf.AM.baco@cfg.sg"
-                passwordTxtFld?.text = "test@170"
+//                userNameTxtFld?.text = "cf.AM.baco@cfg.sg"
+//                passwordTxtFld?.text = "test@170"
         
         //        userNameTxtFld?.text = "cf.MO.baco@cfg.sg"
         //        passwordTxtFld?.text = "test@166"
@@ -85,6 +85,9 @@ class ViewController: UIViewController {
         
         //        userNameTxtFld?.text = "cf.Doctor.Mega@cfg.sg"
         //        passwordTxtFld?.text = "test@183"
+//        userNameTxtFld?.text = "cf.AM.VlifeMKG@cfg.sg"
+//        passwordTxtFld?.text = "test@1231"
+    
         
         
 //        Production Credential
@@ -151,6 +154,7 @@ class ViewController: UIViewController {
             "username": "integrationUser@Cfg.com",
             "password": IntegrationPassword
         ] as [String : Any]
+        print(userData)
         authOperation.executLogin(userDetail: userData) { error, response, status in
                 print(response)
             if status == .success {
@@ -191,8 +195,10 @@ class ViewController: UIViewController {
             "Password": passwordTxtFld?.text ?? EMPTY,
             "DeviceToken": DeviceToken,
         ] as [String : Any]
+        print(userParam)
         authOperation.executeCFGMAppLogin(param: userParam) { error, response, status in
             let dict = response ?? [:]
+            print(dict)
             let responseDict = dict["ResponseMessage"] as? [String: Any]
             let checkDict = responseDict?.isEmpty
             if (checkDict == nil) {
