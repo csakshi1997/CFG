@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.cccinfotech.cfg</string>
+	<string>com.cccinfotech.cfgapp</string>
 	<key>PROJECT_ID</key>
 	<string>cfg--management-app</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:791935290749:ios:3a55566fce69110b71d014</string>
+	<string>1:791935290749:ios:b6a4c0e4e67b6bf271d014</string>
 </dict>
 </plist>

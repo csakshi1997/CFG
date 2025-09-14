@@ -131,7 +131,10 @@ static NSString *kUserNotificationDidReceiveResponseSelectorString =
     [self swizzleUserNotificationCenterDelegate:delegate];
   }
   // Add KVO observer for "delegate" keyPath for future changes
-  [self addDelegateObserverToUserNotificationCenter:notificationCenter];
+//  [self addDelegateObserverToUserNotificationCenter:notificationCenter];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self addDelegateObserverToUserNotificationCenter:notificationCenter];
+    });
 }
 
 #pragma mark - UNNotificationCenter Swizzling
